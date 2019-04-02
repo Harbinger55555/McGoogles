@@ -8,3 +8,7 @@ OBJ = McGoogles.o main.o
 
 main: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
+	
+.PHONY: clean
+clean:
+	rm main *.o
