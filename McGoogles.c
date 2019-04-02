@@ -78,7 +78,7 @@ int AddOrder(McGoogles* mcg, Order* order) {
     AddOrderToBack(&mcg->orders, order);
     (mcg->current_size)++;
     
-    pthread_cond_signal(&mcg->can_get_orders);
+    pthread_cond_broadcast(&mcg->can_get_orders);
     pthread_mutex_unlock(&mcg->mutex);
     
     return -1;
@@ -103,7 +103,7 @@ Order *GetOrder(McGoogles* mcg) {
         (mcg->orders_handled)++;
     }
     
-    pthread_cond_signal(&mcg->can_add_orders);
+    pthread_cond_broadcast(&mcg->can_add_orders);
     pthread_mutex_unlock(&mcg->mutex);
     
     return head;
