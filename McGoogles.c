@@ -78,7 +78,7 @@ int AddOrder(McGoogles* mcg, Order* order) {
     AddOrderToBack(&mcg->orders, order);
     (mcg->current_size)++;
     
-    pthread_cond_broadcast(&mcg->can_get_orders);
+    pthread_cond_signal(&mcg->can_get_orders);
     pthread_mutex_unlock(&mcg->mutex);
     
     return -1;
@@ -87,8 +87,9 @@ int AddOrder(McGoogles* mcg, Order* order) {
 Order *GetOrder(McGoogles* mcg) {
     pthread_mutex_lock(&mcg->mutex);
     
-    // The second condition is to wake up all the remaining waiting 
-    // cooks when the final order is completed.
+    // The second condition is to prevent all the remaining waiting 
+    // cooks to be stuck in the loop when the final order is completed,
+    // and a broadcast to wake up is sent.
     while (IsEmpty(mcg) &&
            mcg->orders_handled < mcg->expected_num_orders) {
         pthread_cond_wait(&mcg->can_get_orders, &mcg->mutex);
@@ -103,7 +104,13 @@ Order *GetOrder(McGoogles* mcg) {
         (mcg->orders_handled)++;
     }
     
-    pthread_cond_broadcast(&mcg->can_add_orders);
+    // If final order, broadcast can_get_orders to wake up all
+    // the other waiting cooks.
+    if (mcg->orders_handled == mcg->expected_num_orders) {
+        pthread_cond_broadcast(&mcg->can_get_orders);
+    } else {
+        pthread_cond_signal(&mcg->can_add_orders);
+    }
     pthread_mutex_unlock(&mcg->mutex);
     
     return head;

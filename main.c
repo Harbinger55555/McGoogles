@@ -6,8 +6,8 @@
 
 // Feel free to play with these numbers! This is a great way to
 // test your implementation.
-#define MCGOOGLES_SIZE 1000
-#define NUM_CUSTOMERS 5
+#define MCGOOGLES_SIZE 3
+#define NUM_CUSTOMERS 50
 #define NUM_COOKS 5
 #define ORDERS_PER_CUSTOMER 100
 #define EXPECTED_NUM_ORDERS NUM_CUSTOMERS * ORDERS_PER_CUSTOMER
