@@ -24,7 +24,7 @@ McGoogles *mcg;
  */
 
 void* McGooglesCustomer(void* tid) {
-    int customer_id = *(int*) tid;
+    int customer_id = *(int*)(long*) tid;
     int orders_made = 0;
     
     while (orders_made < ORDERS_PER_CUSTOMER) {
@@ -51,7 +51,7 @@ void* McGooglesCustomer(void* tid) {
  */
 
 void* McGooglesCook(void* tid) {
-    int cook_id = *(int*) tid;
+    int cook_id = *(int*)(long*) tid;
 	int orders_fulfilled = 0;
     
     while (mcg->orders_handled < mcg->expected_num_orders) {
@@ -82,8 +82,8 @@ int main() {
     pthread_t customers[NUM_CUSTOMERS];
     pthread_t cooks[NUM_COOKS];
 
-    int customer_counter[NUM_CUSTOMERS];
-    int cook_counter[NUM_COOKS];
+    long customer_counter[NUM_CUSTOMERS];
+    long cook_counter[NUM_COOKS];
     for(int i = 0; i < NUM_CUSTOMERS; i++) {
         customer_counter[i] = i;
         pthread_create(&customers[i], NULL, McGooglesCustomer, (void*) &customer_counter[i]);
